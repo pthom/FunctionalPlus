@@ -50,7 +50,6 @@ std::string gemstones_bench(const std::string& input)
     return show(size_of_cont(gem_elements));
 }
 
-
 TEST_CASE("my_benchmark")
 {
     std::string input("Lorem ipsum\ndolor sit amet,\nconsectetur,\nadipisci velit");
@@ -63,3 +62,37 @@ TEST_CASE("my_benchmark")
     // split_lines|    1000|   3.795ms| 3.795ns|  2.729ns|
     std::cout << fplus::show(my_benchmark_session.report());
 }
+
+fplus::benchmark_session my_benchmark_session2;
+
+int sort_example()
+{
+    using Ints = std::vector<int>;
+
+    Ints ascending_numbers = benchmark_expression(
+        my_benchmark_session2,
+        "ascending",
+        fplus::numbers(0 COMMA 1000);
+    );
+    Ints shuffled_numbers = benchmark_expression(
+        my_benchmark_session2,
+        "shuffle",
+        fplus::shuffle(std::mt19937::default_seed, ascending_numbers);
+    );
+
+    auto sort_func = [](const Ints& values) { return fplus::sort(values); };
+    auto sort_bench = fplus::make_benchmark_function(my_benchmark_session2, "sort", sort_func);
+
+    auto sorted_numbers = sort_bench(shuffled_numbers);
+    // sorting 1000 numbers should require less than 0.1 seconds (in practice it requires about 0.2ms)
+
+    return 1;
+}
+
+TEST_CASE("my_benchmark2")
+{
+    auto sort_example_bench = make_benchmark_function(my_benchmark_session2, "sort_example", sort_example);
+    fplus::run_n_times(1000, [&]() { sort_example_bench(); });
+    std::cout << fplus::show(my_benchmark_session2.report());
+}
+
