@@ -108,7 +108,7 @@ TEST_CASE("benchmark_example")
 
     // A call to : 
     //
-    std::cout << fplus::show(my_benchmark_session.report()); 
+    // std::cout << fplus::show(my_benchmark_session.report()); 
     //
     // Would output something like
     // Function              |Nb calls|Total time|Av. time   |Deviation |

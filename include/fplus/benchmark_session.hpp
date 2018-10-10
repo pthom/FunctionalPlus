@@ -133,7 +133,52 @@ namespace fplus
 
     } // namespace internal
 
-
+    // API search type: make_benchmark_function : (benchmark_session, string, (a... -> b)) -> (a... -> b)
+    // fwd bind count: 0
+    // Transforms a function into a function with the *same* signature
+    // and behavior, except that it also stores stats into the benchmark session (first parameter),
+    // under the name given by the second parameter.
+    // (use make_benchmark_void_function if your function returns void).
+    //
+    // Note that make_benchmark_function *will add side effects* to the function
+    // (since it stores data into the benchmark session at each call)
+    //
+    // Example:
+    //
+    // benchmark_session bench_session;
+    // ...
+    // int add(int a, int b) { 
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    //     return a + b;
+    // }
+    // ...
+    // auto add_bench = make_benchmark_void_function(bench_session, "add", add);
+    // ...
+    // std::cout << benchmark_session.report();
+    //
+    // (Read benchmark_session_test.cpp for a full example)
+    //
+    // ----------------------------------------------------------
+    //
+    // As an alternative to make_benchmark_function, you can also benchmark an expression.
+    // For example, if you want to benchmark the following line:
+    //
+    //     Ints shuffled_numbers = fplus::shuffle(std::mt19937::default_seed, ascending_numbers);
+    //
+    // In order to do so, ye just copy/paste this expression 
+    // into "bench_expression" like shown below. This expression will then be benchmarked with the name "shuffle"
+    //
+    // Ints shuffled_numbers = benchmark_expression(
+    //     my_benchmark_session,
+    //     "shuffle",
+    //     fplus::shuffle(std::mt19937::default_seed, ascending_numbers);
+    // );
+    //
+    // Notes :
+    //  - benchmark_expression is a preprocessor macro that uses an immediately invoked lambda (IIL)
+    // - the expression can be copy-pasted with no modification, and it is possible to not remove the ";"
+    //   (although it also works if it is not present)
+    //
     template<class Fn>
     auto make_benchmark_function(benchmark_session & session, const FunctionName & name, Fn f)
     {
@@ -143,6 +188,26 @@ namespace fplus
     }
 
 
+    // API search type: make_benchmark_void_function : (benchmark_session, string, (a... -> Void)) -> (a... -> Void)
+    // fwd bind count: 0
+    // Transforms a function that returns a void into a function with the *same* signature
+    // and behavior, except that it also stores stats into the benchmark session (first parameter),
+    // under the name given by the second parameter
+    //
+    // Note that make_benchmark_void_function *will add side effects* to the function
+    // (since it stores data into the benchmark session at each call)
+    //
+    // Example:
+    //
+    // benchmark_session bench_session;
+    // ...
+    // void foo() { 
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    // }
+    // ...
+    // auto foo_bench = make_benchmark_void_function(bench_session, "foo", foo);
+    // ...
+    // std::cout << benchmark_session.report();
     template<class Fn>
     auto make_benchmark_void_function(benchmark_session & session, const FunctionName & name, Fn f)
     {
@@ -152,10 +217,10 @@ namespace fplus
     }
 
 #define benchmark_expression(bench_session, name, expression)      \
-    make_benchmark_function(                                   \
-    bench_session,                                             \
-    name,                                                      \
-    [&]() { return expression; }                               \
+    make_benchmark_function(                                       \
+        bench_session,                                             \
+        name,                                                      \
+        [&]() { return expression; }                               \
     )();
 
 #define COMMA ,
