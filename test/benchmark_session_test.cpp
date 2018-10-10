@@ -14,7 +14,7 @@
 
 // This is an example on how to use benchmark_session in order to bench separate parts of an algorithm
 
-// You need to instantiate a session into which the stats will be collected
+// We need to instantiate a session into which the stats will be collected
 fplus::benchmark_session my_benchmark_session;
 
 
@@ -24,19 +24,28 @@ int benchmark_example()
     using Ints = std::vector<int>;
 
     // Example 1 : benchmark by replacing a function
+    //
     // We want to benchmark the following code :
     //    Ints ascending_numbers = fplus::numbers(0, 1000);
     //
-    // So, first we make an alternate version of the function  
-    //   "fplus::numbers<int, std::vector<int>>"
-    // numbers_bench has the same signature as fplus::numbers, except that
-    // it also stores stats into the benchmark session, under the name "numbers"
+    // So, first we make an alternate version of the function "fplus::numbers"
+    // Since fplus::numbers is a template function, we need to specify 
+    // that the actual version we want to benchmark 
+    // is "fplus::numbers<int, std::vector<int>>"
+    //
+    // numbers_bench will our alternate version and it
+    // has the same signature as fplus::numbers<int, std::vector<int>>, 
+    // except that it also stores stats into the benchmark session, 
+    // under the name "numbers"
+    //
+    // Note that make_benchmark_function *will add side effects* to the function
+    // (since it stores data into the benchmark session at each call)
     auto numbers_bench = make_benchmark_function(
         my_benchmark_session,
         "numbers",
-        fplus::numbers<int, std::vector<int>>
+        fplus::numbers<int, std::vector<int>> 
     );
-    // Then, we replace the original code (Ints ascending_numbers = fplus::numbers(0, 1000);)
+    // Then, we replace the original code "Ints ascending_numbers = fplus::numbers(0, 1000);"
     // by a code that uses the benchmarked function
     Ints ascending_numbers = numbers_bench(0, 100000);
 
@@ -45,9 +54,14 @@ int benchmark_example()
     // The original expression we want to benchmark was:
     //     Ints shuffled_numbers = fplus::shuffle(std::mt19937::default_seed, ascending_numbers);
     //
-    // In order to do so, we just copy/paste this expression into the bench_expression macro, 
-    // like shown below. 
-    // This expression will then be benchmarked with the name "shuffle" 
+    // In order to do so, we just copy/paste this expression 
+    // into "bench_expression" like shown below.
+    // This expression will then be benchmarked with the name "shuffle"
+    //
+    // Notes :
+    //  - benchmark_expression is a preprocessor macro that uses an immediately invoked lambda (IIL)
+    // - the expression can be paster as-is, and it is possible to not remove the ";"
+    //   (although it also works if it is not present)
     Ints shuffled_numbers = benchmark_expression(
         my_benchmark_session,
         "shuffle",
@@ -70,6 +84,7 @@ int benchmark_example()
     
     Ints descending_numbers = fplus::reverse(ascending_numbers); // this call is not benchmarked
 
+    // here we benchmark the call to fplus::sort(descending_numbers)
     const auto sorted_numbers2 = benchmark_expression(
         my_benchmark_session,
         "sort_reverse_sequence",
