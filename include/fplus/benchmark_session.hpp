@@ -30,8 +30,8 @@ namespace internal
 class benchmark_session
 {
 public:
-    benchmark_session() = default;
-    
+    benchmark_session() : functions_times_mutex_(), functions_times_() {};
+
     // report() shall return a string with a summary of the session
     // Example below:
     // Function              |Nb calls|Total time|Av. time|Deviation|
