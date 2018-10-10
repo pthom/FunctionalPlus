@@ -38,7 +38,7 @@ int benchmark_example()
     );
     // Then, we replace the original code (Ints ascending_numbers = fplus::numbers(0, 1000);)
     // by a code that uses the benchmarked function
-    Ints ascending_numbers = numbers_bench(0, 10000);
+    Ints ascending_numbers = numbers_bench(0, 100000);
 
     // Example 2: benchmark by replacing an expression
     // Below, we will benchmark an expression
@@ -59,9 +59,24 @@ int benchmark_example()
     //    const auto sorted_numbers = fplus::sort(shuffled_numbers);
     const auto sorted_numbers = benchmark_expression(
         my_benchmark_session,
-        "sort",
+        "sort_shuffled_sequence",
         fplus::sort(shuffled_numbers);
     );
+    // Verify that the sort has worked
+    assert(sorted_numbers == ascending_numbers);
+
+    // In this toy example, we will compare the performance 
+    // of sorting a shuffled sequence versus sorting a reversed sequence
+    
+    Ints descending_numbers = fplus::reverse(ascending_numbers); // this call is not benchmarked
+
+    const auto sorted_numbers2 = benchmark_expression(
+        my_benchmark_session,
+        "sort_reverse_sequence",
+        fplus::sort(descending_numbers);
+    );
+    // Verify that the sort has worked
+    assert(sorted_numbers2 == ascending_numbers);
 
     return 1;
 }
@@ -76,15 +91,20 @@ TEST_CASE("benchmark_example")
         benchmark_example);
 
     // For the sake of this test, we will run the benchmarked function several times
-    fplus::run_n_times(1000, [&]() { benchmark_example_bench(); });
+    fplus::run_n_times(10, [&]() { benchmark_example_bench(); });
 
     std::cout << fplus::show(my_benchmark_session.report());
     // Will output something like
-    // Function         |Nb calls|Total time|Av. time|Deviation|
-    // -----------------+--------+----------+--------+---------+
-    // benchmark_example|    1000|  71.862ms|71.862ns| 12.243ns|
-    // shuffle          |    1000|  48.094ms|48.094ns|  6.687ns|
-    // sort             |    1000|  21.389ms|21.389ns|  5.760ns|
-    // numbers          |    1000|   1.736ms| 1.736ns|  0.496ns|
+    // Function              |Nb calls|Total time|Av. time   |Deviation |
+    // ----------------------+--------+----------+-----------+----------+
+    // benchmark_example     |      10| 136.494ms|13649.412ns|1191.401ns|
+    // sort_shuffled_sequence|      10|  66.698ms| 6669.850ns| 339.859ns|
+    // shuffle               |      10|  62.881ms| 6288.136ns| 754.399ns|
+    // sort_reverse_sequence |      10|   3.079ms|  307.911ns|  71.570ns|
+    // numbers               |      10|   2.364ms|  236.398ns| 134.988ns|
+
+    // Interestingly enough, we see that sort has a very good performance
+    // on reversed sequences. It proves that sort is not just based on qsort
+    // (qsort performs badly with reversed sequences)
 }
 
