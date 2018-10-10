@@ -129,7 +129,8 @@ TEST_CASE("benchmark_example")
         REQUIRE_EQ(reports.size(), 5);
         const auto & one_report = reports.at("benchmark_example");
         REQUIRE_EQ(one_report.nb_calls, 10);
-        REQUIRE(one_report.average_time == doctest::Approx(one_report.total_time / one_report.nb_calls));
+        REQUIRE(one_report.average_time == doctest::Approx(
+            one_report.total_time / static_cast<double>(one_report.nb_calls)));
     }
 
     // test report()

@@ -65,7 +65,7 @@ namespace fplus
             return result;
         }
 
-        std::map<FunctionName, std::vector<ExecutionTime>> functions_times_;
+        std::map<FunctionName, std::vector<ExecutionTime>> functions_times_ = {};
     };
 
     namespace internal 
@@ -228,8 +228,10 @@ namespace fplus
     template<class Fn>
     auto run_n_times(int nb_runs, Fn f)
     {
-        for (auto _ : fplus::numbers(0, nb_runs))
+        for (auto _ : fplus::numbers(0, nb_runs)) {
+            (void) _; // suppress warning / unused variable
             f();
+        }
     }
 
 
