@@ -30,6 +30,8 @@ namespace internal
 class benchmark_session
 {
 public:
+    benchmark_session() = default;
+    
     // report() shall return a string with a summary of the session
     // Example below:
     // Function              |Nb calls|Total time|Av. time|Deviation|
@@ -70,7 +72,7 @@ private:
     }
 
     mutable std::mutex functions_times_mutex_;
-    std::map<FunctionName, std::vector<ExecutionTime>> functions_times_ = {};
+    std::map<FunctionName, std::vector<ExecutionTime>> functions_times_;
 };
 
 namespace internal 
