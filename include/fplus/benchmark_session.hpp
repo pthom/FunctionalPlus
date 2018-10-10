@@ -98,7 +98,6 @@ namespace fplus
             benchmark_session & benchmark_session_;
             FunctionName function_name_;
             Fn fn_;
-            fplus::maybe<int> v;
         };
 
         template<typename Fn>
@@ -128,7 +127,6 @@ namespace fplus
             benchmark_session & benchmark_session_;
             FunctionName function_name_;
             Fn fn_;
-            fplus::maybe<int> v;
         };
 
     } // namespace internal
