@@ -150,4 +150,3 @@ TEST_CASE("benchmark_example")
         REQUIRE(fplus::all(check_nb_columns));
     }
 }
-
