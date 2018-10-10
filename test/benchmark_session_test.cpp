@@ -19,7 +19,7 @@ fplus::benchmark_session my_benchmark_session;
 
 
 // Benchmarked function : several sub parts of this function are benchmarked separately
-int benchmark_example()
+void benchmark_example()
 {
     using Ints = std::vector<int>;
 
@@ -92,15 +92,13 @@ int benchmark_example()
     );
     // Verify that the sort has worked
     assert(sorted_numbers2 == ascending_numbers);
-
-    return 1;
 }
 
 TEST_CASE("benchmark_example")
 {
     // Example 4 : benchmark by replacing a function
     // We also want to benchmark the "benchmark_example" in its entirety
-    auto benchmark_example_bench = make_benchmark_function(
+    auto benchmark_example_bench = make_benchmark_void_function(
         my_benchmark_session, 
         "benchmark_example", 
         benchmark_example);
@@ -150,7 +148,6 @@ TEST_CASE("benchmark_example")
             return (fplus::count('|', s) + fplus::count('+', s) ) == 5;
         }, lines );
         REQUIRE(fplus::all(check_nb_columns));
-
     }
 }
 

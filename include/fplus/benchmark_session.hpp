@@ -100,6 +100,37 @@ namespace fplus
             Fn fn_;
             fplus::maybe<int> v;
         };
+
+        template<typename Fn>
+        class bench_void_function_impl
+        {
+        public:
+            explicit bench_void_function_impl(
+                benchmark_session & benchmark_sess,
+                FunctionName function_name,
+                Fn fn) 
+                : benchmark_session_(benchmark_sess)
+                , function_name_(function_name)
+                , fn_(fn)
+            {};
+
+            template<typename ...Args> auto operator()(Args... args) { _bench_result(args...); }
+
+        private:
+            template<typename ...Args>
+            auto _bench_result(Args... args)
+            {
+                fplus::stopwatch timer;
+                fn_(args...);
+                benchmark_session_.store_one_time(function_name_, timer.elapsed());
+            }
+
+            benchmark_session & benchmark_session_;
+            FunctionName function_name_;
+            Fn fn_;
+            fplus::maybe<int> v;
+        };
+
     } // namespace internal
 
 
@@ -109,6 +140,15 @@ namespace fplus
         // transforms f into a function with the same 
         // signature, that will store timings into the benchmark session
         return internal::bench_function_impl<Fn>(session, name, f);
+    }
+
+
+    template<class Fn>
+    auto make_benchmark_void_function(benchmark_session & session, const FunctionName & name, Fn f)
+    {
+        // transforms a void returning function into a function with the same 
+        // signature, that will store timings into the benchmark session
+        return internal::bench_void_function_impl<Fn>(session, name, f);
     }
 
 #define benchmark_expression(bench_session, name, expression)      \
