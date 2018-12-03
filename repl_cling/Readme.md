@@ -39,7 +39,7 @@ export DYLD_LIBRARY_PATH=$(pwd)/opencv-install/lib  # this is MacOS specific
 ````
 
 ````bash
-
+cp -a ../include/fplus .
 ````
 
 ### An example interactive session:
