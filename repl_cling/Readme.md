@@ -31,9 +31,15 @@ cling is a mix of `clang` + REPL. Thus, it accepts the standard clang argument (
 
 
 ### preparation
+
+Mac OS
 ````bash
 ln -s /path/to/your/opencv/install opencv-install
 export DYLD_LIBRARY_PATH=$(pwd)/opencv-install/lib  # this is MacOS specific
+````
+
+````bash
+
 ````
 
 ### An example interactive session:
