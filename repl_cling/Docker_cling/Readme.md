@@ -25,7 +25,7 @@ Launch a vnc viewer on your host machine and connect to `localhost` -> you will 
 screen of the docker container
 
 
-Then, run the interactive sessions instructions given inside [../../Readme.md](../../Readme.md):
+Then, run the interactive sessions instructions given inside [../Readme.md](../Readme.md):
 
 
 ````cpp

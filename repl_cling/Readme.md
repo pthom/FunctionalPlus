@@ -119,7 +119,7 @@ gem_elements
 If you do not want to install cling on your machine, or if you are not running under linux,
 you can use the docker image provided inside `repl_cling/Docker/ubuntu`.
 
-Refer to [Docker/ubuntu/Readme.md](Docker/ubuntu/Readme.md)
+Refer to [Docker_cling/Readme.md](Docker_cling/Readme.md)
 
 ### Mac OS
 
