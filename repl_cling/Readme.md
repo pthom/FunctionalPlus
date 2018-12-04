@@ -117,7 +117,7 @@ gem_elements
 ### You can test this in a docker container
 
 If you do not want to install cling on your machine, or if you are not running under linux,
-you can use the docker image provided inside `repl_cling/Docker/ubuntu`.
+you can use the docker image provided inside `repl_cling/Docker_cling_`.
 
 Refer to [Docker_cling/Readme.md](Docker_cling/Readme.md)
 
