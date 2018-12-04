@@ -1,14 +1,7 @@
 // Load this file into cling, like so:
 //
-// > cling --std=c++14 -Lstdc++
-// ****************** CLING ******************
-// * Type C++ code and press enter to run it *
-// *             Type .q to exit             *
-// *******************************************
+// > cling --std=c++14
 // [cling]$ .L init.cpp          <=== Type this to load this file
-
-// these lines are for MacOS
-// you might have to adjust them for linux
 
 #pragma cling add_library_path("/usr/local/lib")
 #pragma cling add_include_path("/usr/local/include/opencv4")

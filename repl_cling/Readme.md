@@ -10,20 +10,21 @@ See https://github.com/root-project/cling and https://cdn.rawgit.com/root-projec
 
 ## Installation
 
-### Mac
-
-````bash
-brew install cling
-````
 
 ### Linux
 
 Nightly build are available here: https://root.cern.ch/download/cling/
 Download them and add to your path (temporarily.
 
+### Mac
+
+````bash
+brew install cling
+````
+
 ### Usage
 
-cling is a mix of `clang` + REPL. Thus, it accepts the standard clang argument (-L, --std, -I, etc)
+cling is a mix of `clang` + REPL. Thus, it accepts the standard clang argument (`-L`, `--std=c++14`, `-I`, etc)
 
 
 ## Example usage with fplus and opencv
@@ -36,11 +37,14 @@ cp -a ../include/fplus .
 
 ### An example interactive session:
 
+Launch `cling` with C++14 support (required by fplus).
+
 ````bash
 cling --std=c++14
 ````
 
 Then, enter these command one by in the cling interpreter:
+
 ````cpp
 
 // this will load the file init.cpp :
@@ -63,7 +67,6 @@ cv::imshow("blur", blur); cv::waitKey(100);
 //
 // Now, onto some functional REPL
 //
-
 std::string input = "Lorem ipsum \ndolor sit amet,\nconsectetur,\nadipisci velit";
 
 // Let's try to split some lines
