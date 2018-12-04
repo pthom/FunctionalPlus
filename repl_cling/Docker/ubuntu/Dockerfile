@@ -1,6 +1,3 @@
-# FROM gcc:8.2
-# FROM gcc:7.3
-# FROM ubuntu:14.04
 FROM ubuntu:16.04
 WORKDIR /sources_docker
 RUN apt-get update
