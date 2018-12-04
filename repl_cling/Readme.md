@@ -13,7 +13,8 @@ See https://github.com/root-project/cling and https://cdn.rawgit.com/root-projec
 ### Linux
 
 Nightly build are available here: https://root.cern.ch/download/cling/
-Download them and add to your path (temporarily.
+
+Download them and add to your path.
 
 ### Mac
 
