@@ -9,15 +9,18 @@
 
 // these lines are for MacOS
 // you might have to adjust them for linux
-#pragma cling add_include_path("opencv-install/include")
-#pragma cling add_library_path("opencv-install/lib")
-#pragma cling load("libopencv_core.dylib")
-#pragma cling load("libopencv_calib3d.dylib")
-#pragma cling load("libopencv_highgui.dylib")
-#pragma cling load("libopencv_imgcodecs.dylib")
-#pragma cling load("libopencv_imgproc.dylib")
 
-#pragma cling add_include_path("fplus_include/")
+#pragma cling add_library_path("/usr/local/lib")
+#pragma cling add_include_path("/usr/local/include/opencv4")
+
+#pragma cling load("libopencv_core.so")
+#pragma cling load("libopencv_calib3d.so")
+#pragma cling load("libopencv_highgui.so")
+#pragma cling load("libopencv_imgcodecs.so")
+#pragma cling load("libopencv_imgproc.so")
+
+//#pragma cling add_include_path("fplus_include/")
+#pragma cling add_include_path(".")
 
 #include <string>
 #include <vector>

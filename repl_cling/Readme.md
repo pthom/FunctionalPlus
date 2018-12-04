@@ -19,25 +19,17 @@ brew install cling
 ### Linux
 
 Nightly build are available here: https://root.cern.ch/download/cling/
-
+Download them and add to your path (temporarily.
 
 ### Usage
 
 cling is a mix of `clang` + REPL. Thus, it accepts the standard clang argument (-L, --std, -I, etc)
 
 
-
 ## Example usage with fplus and opencv
 
-
 ### preparation
-
-Mac OS
-````bash
-ln -s /path/to/your/opencv/install opencv-install
-export DYLD_LIBRARY_PATH=$(pwd)/opencv-install/lib  # this is MacOS specific
-````
-
+As of now, a copy of fplus include dir is required here:
 ````bash
 cp -a ../include/fplus .
 ````
@@ -45,7 +37,7 @@ cp -a ../include/fplus .
 ### An example interactive session:
 
 ````bash
-cling --std=c++14 -Lstdc++
+cling --std=c++14
 ````
 
 Then, enter these command one by in the cling interpreter:
@@ -60,12 +52,12 @@ Then, enter these command one by in the cling interpreter:
 
 // this will load an image, and show it immediately
 cv::Mat lena = cv::imread("lena.jpg");
-cv::imshow("lena", lena); cv::waitKey(10);
+cv::imshow("lena", lena); cv::waitKey(100);
 
 // let's try some image manipulation
 cv::Mat blur;
 cv::blur(lena, blur, cv::Size(15, 15));
-cv::imshow("blur", blur); cv::waitKey(10);
+cv::imshow("blur", blur); cv::waitKey(100);
 
 
 //
@@ -87,38 +79,9 @@ const auto lines = fplus::split_lines(input, false);
 // Let's correct this:
 const auto lines = fplus::split_lines(false, input);
 
-
 // Let's see those lines:
 lines
-
-// oops, it is not happy:
-// input_line_8:2:40: error: no template named 'basic_string'; did you mean 'std::basic_string'?
-//  cling::printValue(*(const std::vector<basic_string<char>, allocator<basic_string<char> > >**)0x7ffee7d0de18);
-//                                        ^~~~~~~~~~~~
-//                                        std::basic_string
-
-// let's help it
-using namespace std;
-lines
-// Still not happy !
-// IncrementalExecutor::executeFunction: symbol '_ZNSt3__1plIcNS_11char_traitsIcEENS_9allocatorIcEEEENS_12basic_stringIT_T0_T1_EERKS9_PKS6_' unresolved while linking [cling interface function]!
-// You are probably missing the definition of std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > std::__1::operator+<char, std::__1::char_traits<char>, std::__1::allocator<char> >(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, char const*)
-// Maybe you need to load the corresponding shared library?
-// ERROR in cling's callPrintValue(): cannot pass value!
-// (const std::vector<basic_string<char>, allocator<basic_string<char> > > &) ERROR in cling's callPrintValue(): missing value string.
-
-// Ok, fplus::show to the rescue !
-template <typename T> void print(const T &t)
-{
-  std::cout << fplus::show(t).c_str() << std::endl;
-}
-
-
-// Does it work?
-print(lines)
-// -> [Lorem ipsum , dolor sit amet,, consectetur,, adipisci velit]
-// Yes !
-
+// -> (std::vector<std::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > &) { "Lorem ipsum ", "dolor sit amet,", "consectetur,", "adipisci velit" }
 
 // Let's continue
 typedef std::set<std::string::value_type> character_set;
@@ -126,12 +89,33 @@ const auto sets = fplus::transform(
     fplus::convert_container<character_set, std::string>,
     lines);
 
-print(sets)
-// -> [[ , L, e, i, m, o, p, r, s, u], [ , ,, a, d, e, i, l, m, o, r, s, t], [,, c, e, n, o, r, s, t, u], [ , a, c, d, e, i, l, p, s, t, v]]
+sets
+// -> (std::vector<std::set<char, std::less<char>, std::allocator<char> >, std::allocator<std::set<char, std::less<char>, std::allocator<char> > > > &) { { ' ', 'L', 'e', 'i', 'm', 'o', 'p', 'r', 's', 'u' }, { ' ', ',', 'a', 'd', 'e', 'i', 'l', 'm', 'o', 'r', 's', 't' }, { ',', 'c', 'e', 'n', 'o', 'r', 's', 't', 'u' }, { ' ', 'a', 'c', 'd', 'e', 'i', 'l', 'p', 's', 't', 'v' } }
 
 const auto gem_elements = fplus::fold_left_1(
     fplus::set_intersection<character_set>, sets);
-print(gem_elements)
-// -> [e, s]
+gem_elements
+// -> (std::set<char, std::less<char>, std::allocator<char> > &) { 'e', 's' }
 
 ````
+
+
+## Advices
+
+### You can test this in a docker container
+
+If you do not want to install cling on your machine, or if you are not running under linux,
+you can use the docker image provided inside `repl_cling/Docker/ubuntu`.
+
+Refer to [Docker/ubuntu/Readme.md](Docker/ubuntu/Readme.md)
+
+### Mac OS
+
+On Mac OS, if opencv is not installed in a standard path, you can fill `DYLD_LIBRARY_PATH`
+
+````bash
+ln -s /path/to/your/opencv/install opencv-install
+export DYLD_LIBRARY_PATH=$(pwd)/opencv-install/lib  # this is MacOS specific
+````
+
+Also, use `init.mac.cpp` instead of `init.cpp`

@@ -37,14 +37,28 @@ RUN echo "export PATH=$PATH:/cling_2018-12-03_ubuntu16/bin" >> /root/.zshrc
 
 # ADD install_scripts/build_opencv.sh /build_opencv.sh
 
-# compile opencv
+# get opencv source
 RUN cd / && git clone https://github.com/opencv/opencv.git
+
+# install virtual x11 server
+ADD install_scripts/install_x11vnc.sh /install_scripts/install_x11vnc.sh
+RUN /install_scripts/install_x11vnc.sh
+RUN apt-get install -y libgtk2.0-dev
+
 RUN cd /opencv && \
     mkdir build && \
     cd build && \
-    cmake -DCMAKE_BUILD_TYPE=RELEASE -GNinja ..
-RUN cd /opencv/build && ninja
-RUN cd /opencv/build && ninja install
+    cmake -DCMAKE_BUILD_TYPE=RELEASE -GNinja .. \
+    -DBUILD_JAVA=OFF \
+    -DBUILD_PROTOBUF=OFF \
+    -DBUILD_PERF_TESTS=OFF \
+    -DBUILD_TEST=OFF \
+    -DBUILD_opencv_apps=OFF \
+    -DBUILD_opencv_java_bindings_generator=OFF \
+    -DBUILD_opencv_python_bindings_generator=OFF \
+    -DBUILD_opencv_gapi=OFF\
+    -DWITH_GTK=ON
 
-ADD install_scripts/install_x11vnc.sh /install_scripts/install_x11vnc.sh
-RUN /install_scripts/install_x11vnc.sh
+RUN cd /opencv/build && ninja && ninja install
+
+RUN echo "export DISPLAY=:0" >> /root/.zshrc
