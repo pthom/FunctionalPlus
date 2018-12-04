@@ -84,7 +84,9 @@ const auto lines = fplus::split_lines(false, input);
 
 // Let's see those lines:
 lines
-// -> (std::vector<std::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > &) { "Lorem ipsum ", "dolor sit amet,", "consectetur,", "adipisci velit" }
+// -> (std::vector<std::basic_string<char, std::char_traits<char>, std::allocator<char> >,
+// std::allocator<std::basic_string<char, std::char_traits<char>, std::allocator<char> > > > &)
+// { "Lorem ipsum ", "dolor sit amet,", "consectetur,", "adipisci velit" }
 
 // Let's continue
 typedef std::set<std::string::value_type> character_set;
@@ -93,7 +95,12 @@ const auto sets = fplus::transform(
     lines);
 
 sets
-// -> (std::vector<std::set<char, std::less<char>, std::allocator<char> >, std::allocator<std::set<char, std::less<char>, std::allocator<char> > > > &) { { ' ', 'L', 'e', 'i', 'm', 'o', 'p', 'r', 's', 'u' }, { ' ', ',', 'a', 'd', 'e', 'i', 'l', 'm', 'o', 'r', 's', 't' }, { ',', 'c', 'e', 'n', 'o', 'r', 's', 't', 'u' }, { ' ', 'a', 'c', 'd', 'e', 'i', 'l', 'p', 's', 't', 'v' } }
+// -> (std::vector<std::set<char, std::less<char>, std::allocator<char> >,
+//std::allocator<std::set<char, std::less<char>, std::allocator<char> > > > &)
+//{ { ' ', 'L', 'e', 'i', 'm', 'o', 'p', 'r', 's', 'u' },
+//{ ' ', ',', 'a', 'd', 'e', 'i', 'l', 'm', 'o', 'r', 's', 't' },
+//{ ',', 'c', 'e', 'n', 'o', 'r', 's', 't', 'u' },
+//{ ' ', 'a', 'c', 'd', 'e', 'i', 'l', 'p', 's', 't', 'v' } }
 
 const auto gem_elements = fplus::fold_left_1(
     fplus::set_intersection<character_set>, sets);
