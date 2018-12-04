@@ -74,7 +74,9 @@ const auto lines = fplus::split_lines(input, false);
 // input_line_5:2:21: error: no matching function for call to 'split_lines'
 //  const auto lines = fplus::split_lines(input, false);
 //                     ^~~~~~~~~~~~~~~~~~
-// fplus_include/fplus/string_tools.hpp:74:14: note: candidate function not viable: no known conversion from 'std::string' (aka 'basic_string<char, char_traits<char>, allocator<char> >') to 'bool' for 1st argument
+// fplus_include/fplus/string_tools.hpp:74:14: note: candidate function not viable:
+// no known conversion from 'std::string' (aka 'basic_string<char, char_traits<char>,
+// allocator<char> >') to 'bool' for 1st argument
 // ContainerOut split_lines(bool allowEmpty, const String& str)
 
 // ooops, I was wrong in the argument order; but I got an immediate feedback
