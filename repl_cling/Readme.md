@@ -43,7 +43,7 @@ Launch `cling` with C++14 support (required by fplus).
 cling --std=c++14
 ````
 
-Then, enter these command one by in the cling interpreter:
+Then, enter these command one by in the cling interpreter (the first line will load the file [init.cpp](init.cpp))
 
 ````cpp
 
