@@ -1,9 +1,9 @@
 FROM ubuntu:16.04
 WORKDIR /sources_docker
 RUN apt-get update
-RUN apt-get install -y build-essential python3 python3-pip zsh curl wget cmake ninja-build
-RUN apt-get update
-RUN apt-get install -y git
+RUN apt-get install -y build-essential python3 python3-pip zsh curl wget cmake ninja-build git
+
+# install zsh & oh-my-zsh (so that we have nice colors)
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
 
 # update cmake
@@ -16,6 +16,11 @@ RUN echo "export LC_ALL=C.UTF-8" >> /root/.zshrc && \
     echo "export LANG=C.UTF-8" >> /root/.zshrc && \
     echo "alias python=python3" >> /root/.zshrc
 
+# install virtual x11 server
+ADD install_scripts/install_x11vnc.sh /install_scripts/install_x11vnc.sh
+RUN /install_scripts/install_x11vnc.sh
+RUN apt-get install -y libgtk2.0-dev
+RUN echo "export DISPLAY=:0" >> /root/.zshrc
 
 # download cling & add to the PATH
 RUN cd / && \
@@ -23,20 +28,9 @@ RUN cd / && \
 RUN cd / && tar xvf cling.tgz
 RUN echo "export PATH=$PATH:/cling_2018-12-03_ubuntu16/bin" >> /root/.zshrc
 
-# install opencv requirements
-# ADD install_scripts/install_opencv_requirements.sh /install_opencv_requirements.sh
-# RUN /install_opencv_requirements.sh
-
-# ADD install_scripts/build_opencv.sh /build_opencv.sh
-
 # get opencv source
 RUN cd / && git clone https://github.com/opencv/opencv.git
-
-# install virtual x11 server
-ADD install_scripts/install_x11vnc.sh /install_scripts/install_x11vnc.sh
-RUN /install_scripts/install_x11vnc.sh
-RUN apt-get install -y libgtk2.0-dev
-
+# build opencv
 RUN cd /opencv && \
     mkdir build && \
     cd build && \
@@ -52,5 +46,3 @@ RUN cd /opencv && \
     -DWITH_GTK=ON
 
 RUN cd /opencv/build && ninja && ninja install
-
-RUN echo "export DISPLAY=:0" >> /root/.zshrc
